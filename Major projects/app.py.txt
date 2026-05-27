@@ -1,0 +1,34 @@
+import json
+import boto3
+import uuid
+
+dynamodb = boto3.resource('dynamodb')
+table = dynamodb.Table('ExpenseTracker')
+
+def lambda_handler(event, context):
+
+    body = json.loads(event['body'])
+
+    expense_id = str(uuid.uuid4())
+
+    item = {
+        'expense_id': expense_id,
+        'name': body['name'],
+        'amount': body['amount'],
+        'category': body['category'],
+        'date': body['date']
+    }
+
+    table.put_item(Item=item)
+
+    return {
+        'statusCode': 200,
+        'headers': {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+        },
+        'body': json.dumps({
+            'message': 'Expense Added Successfully',
+            'item': item
+        })
+    }
