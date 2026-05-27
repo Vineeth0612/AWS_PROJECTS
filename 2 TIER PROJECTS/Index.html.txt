@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+	<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Registration</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f2f2f2;
+            padding: 30px;
+        }
+
+        .box {
+            width: 320px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px gray;
+        }
+
+        input, button {
+            width: 100%;
+            margin-top: 10px;
+            padding: 8px;
+        }
+
+        button {
+            background: blue;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        #list {
+            margin-top: 20px;
+            padding: 10px;
+            background: #e6ffe6;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h2> Student Form</h2>
+
+    <form id="form">
+        <input type="text" id="name" placeholder="Name" required>
+        <input type="number" id="age" placeholder="Age" required>
+        <input type="text" id="course" placeholder="Course" required>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <div id="list"></div>
+</div>
+
+<script>
+const listDiv = document.getElementById("list");
+
+document.getElementById("form").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const data = {
+        name: document.getElementById("name").value,
+        age: document.getElementById("age").value,
+        course: document.getElementById("course").value
+    };
+
+    fetch("http://YOUR_IP_ADDRESS:5000/student", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(response => {
+        listDiv.innerHTML = "<h3>Student List:</h3>";
+
+        response.students.forEach((s, index) => {
+            listDiv.innerHTML += `
+                <p>${index + 1}. ${s.name} - Age: ${s.age} - Course: ${s.course}</p>
+            `;
+        });
+    })
+    .catch(error => {
+        listDiv.innerHTML = "❌ Server Error!";
+        console.error(error);
+    });
+});
+</script>
+
+</body>
+</html>
+
+•	Try your Frontend ip address in your chrome.
